@@ -32,7 +32,8 @@ int main() {
         cout << "[+] Il grafo e' aciclico" << endl;
     }
 
-    vector<string> sode = getSDPairs(graph,"output.txt");
+    int distMAX = 6; // Limitiamo la distanza in maniera arbitraria per evitare che l'algoritmo impieghi troppo tempo
+    vector<string> sode = getSDPairs(graph,"output.txt", distMAX);
 
     string filename = "s1_d1.txt";
     ifstream file_check(filename);
@@ -60,23 +61,29 @@ int main() {
             return 1;
         }
         // Genero un numero casuale tra sode[0] e sode[1] per la sorgente e la destinazione
-        int distMAX = 6; // Limitiamo la distanza in maniera arbitraria per evitare che l'algoritmo impieghi troppo tempo
         random_device rd;  // Seed
         mt19937 gen(rd()); // Generatore Mersenne Twister
         int sode0 = stoi(sode[0]); // Converto la stringa in intero
         int sode1 = stoi(sode[1]);
         uniform_int_distribution<> distrib(sode0, sode1); 
         int so_int = distrib(gen);
+
+        //check che il numero generato non mi faccia uscire fuori dal range [sode0, sode1]
+        while (so_int + distMAX > sode1) {
+            uniform_int_distribution<> distrib(sode0, sode1); 
+            so_int = distrib(gen);
+        }
+
         int de_int = so_int + distMAX;
-        string so_str = to_string(so_int); // Converto l'intero in stringa
-        string de_str = to_string(de_int);
+        so_str = to_string(so_int); // Converto l'intero in stringa
+        de_str = to_string(de_int);
         outFile << so_str << " " << de_str << endl;
         outFile.close();
         cout << "File creato e scrittura completata con successo!" << endl;
     }
 
 
-    // Definisco arbitrariamente i nodi di origine e destinazione per la ricerca del percorso
+    // Imposto arbitrariamente i nodi di origine e destinazione per la ricerca del percorso
     string source  = so_str; //"20"; "465"; "303"
     string destination = de_str; //"28"; "469"; "309"
 
@@ -84,7 +91,28 @@ int main() {
     if ( graph->pathExists(source, destination) ){
         cout << "Il percorso da " << source << " a " << destination << " esiste" << endl;
     } else {
-        cout << "Il percorso da " << source << " a " << destination << " non esiste" << endl;
+        // Se non esiste, genero un nuovo percorso tra la sorgente e la destinazione
+        while (!graph->pathExists(source, destination)) {
+            cout << "Il percorso da " << source << " a " << destination << " non esiste" << endl;
+            cout << "Genero un nuovo percorso..." << endl;
+            // Genero un numero casuale tra sode[0] e sode[1] per la sorgente e la destinazione
+            random_device rd;  // Seed
+            mt19937 gen(rd()); // Generatore Mersenne Twister
+            int sode0 = stoi(sode[0]); // Converto la stringa in intero
+            int sode1 = stoi(sode[1]);
+            uniform_int_distribution<> distrib(sode0, sode1); 
+            int so_int = distrib(gen);
+
+            //check che il numero generato non mi faccia uscire fuori dal range [sode0, sode1]
+            while (so_int + 6 > sode1) {
+                so_int = distrib(gen);
+            }
+
+            int de_int = so_int + 6;
+            source = to_string(so_int); // Converto l'intero in stringa
+            destination = to_string(de_int);
+        }
+        cout << "Il percorso da " << source << " a " << destination << " ora esiste" << endl;
     }
 
     int n = 10; //n e' il numero di percorsi che voglio trovare
@@ -101,7 +129,7 @@ int main() {
         cout << paths[i].getSequence() << endl;
     }
 
-    // Inizializzo l'algoritmo di Karp-Rabi-n con la lunghezza del pattern e un numero primo
+    // Inizializzo l'algoritmo di Karp-Rabin con la lunghezza del pattern e un numero primo
     KarpRabin kr(4, 101);
     string pattern = "GATA"; // pattern da cercare
 
@@ -114,7 +142,7 @@ int main() {
     bool A = kr.run(paths, pattern);
     cout << "kr.run(paths, pattern): " << A << endl;  
 
-    // Libero la memoria e pulisce il grafo
+    // Libero la memoria e pulisco il grafo
     delete graph;
     return 0;
 }

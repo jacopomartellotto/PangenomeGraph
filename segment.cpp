@@ -16,7 +16,7 @@ string Segment::complementary(){
     string comp(sequence.size(), ' ');
     // Itero sulla sequenza originale per costruire la sequenza complementare inversa
     for (int i = 0; i < sequence.size(); i++){
-        // Ottengo il complemento della base corrente e lo posiziona all'indice corretto
+        // Ottengo il complemento della base corrente e lo posiziona all'indice corretto, popolando il nuovo array al contrario
         comp[ sequence.size() - i - 1 ] = complement[sequence[i]];
     }
     // Restituisce la sequenza complementare inversa

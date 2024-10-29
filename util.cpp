@@ -6,7 +6,7 @@
 
 using namespace std;
 
-vector<string> getSDPairs(PangenomeGraph* graph, const string& filename){
+vector<string> getSDPairs(PangenomeGraph* graph, const string& filename, int distMAX) {
     // Apri un file in cui salvare i risultati
     ofstream outFile(filename);
     
@@ -25,7 +25,9 @@ vector<string> getSDPairs(PangenomeGraph* graph, const string& filename){
         for (const string& dest : dests) {
             if (graph->pathExists(source, dest)) {
                 outFile << "Path from " << source << " to " << dest << " YES" << endl;
-                if (sode[0]=="0") {
+                int source_int = stoi(source);
+                int dest_int = stoi(dest);
+                if (sode[0]=="0" && (dest_int - source_int) > distMAX) {
                     sode[0]=source;
                     sode[1]=dest;
                 }

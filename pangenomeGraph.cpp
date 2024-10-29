@@ -24,6 +24,12 @@ void PangenomeGraph::addSegment(Segment segment) {
     // Inizializza una lista vuota di link per questo segmento
     links.push_back(vector<Link>());
 }
+    /*
+    Col primo metodo addSegment, il segmento viene aggiunto al grafo utilizzando un oggetto Segment. 
+    Questo metodo è utile quando si ha già un oggetto Segment pronto per essere aggiunto al grafo.
+    Il secondo metodo addSegment, invece, accetta il nome e la sequenza del segmento come argomenti.
+    Questo metodo è utile quando si desidera aggiungere un segmento al grafo senza creare un oggetto Segment.
+    */
 
 // Metodo per aggiungere un segmento al grafo utilizzando nome e sequenza
 void PangenomeGraph::addSegment(string name, string sequence) {
@@ -308,7 +314,7 @@ void PangenomeGraph::findNPathsUtil(int from, char orientation, int to, vector<P
             }
         }
     }
-    // Backtracking: rimuove il nodo corrente dal percorso e dallo stack di ricorsione
+    // Backtracking: rimuove il nodo corrente dal percorso e dallo stack di ricorsione per evitare cicli
     currentPath.segments.pop_back();
     currentPath.orientations.pop_back();
     setVectorWithOrientation(from, orientation, recStackPlus, recStackMinus, false);
